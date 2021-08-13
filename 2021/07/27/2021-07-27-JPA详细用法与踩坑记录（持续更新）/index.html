@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com" />
+  
+  
+  
+  <title>JPA详细用法与踩坑记录（持续更新） | Michael`s Blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="JPA," />
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://godbmw.com/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="用于记录工作中遇到的坑以及平时学习的积累">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/blog/css/base.css">
+<link rel="stylesheet" href="/blog/icon/iconfont.css">
+<link rel="stylesheet" href="/blog/css/github-markdown.css">
+<link rel="stylesheet" href="/blog/css/highlight.css">
+
+
+  
+<script src="/blog/js/util.js"></script>
+<script src="/blog/js/valine.min.js"></script>
+
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+  <body>
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/blog/">michael1024-cjx.github.io/blog/</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a 
+              href="/blog/"
+              target="_self"
+            >
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a 
+              href="/blog/archives/"
+              target="_self"
+            >
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a 
+              href="/blog/categories/"
+              target="_self"
+            >
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a 
+              href="/blog/tags/"
+              target="_self"
+            >
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a 
+              href="/blog/friends/"
+              target="_self"
+            >
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          
+            <a 
+              href="/blog/about/"
+              target="_self"
+            >
+              关于
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else>抓到我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a 
+                    href="https://github.com/michael1024-cjx" 
+                    target="_blank"
+                  >
+                    Github
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>JPA详细用法与踩坑记录（持续更新）</span>
+  </h1>
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2021-07-27
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/blog/categories/JPA/">
+            JPA
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="2021-07-27-JPA详细用法与踩坑记录（持续更新）"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="Java-Persistence-API-Java持久层API"><a href="#Java-Persistence-API-Java持久层API" class="headerlink" title="Java Persistence API (Java持久层API)"></a>Java Persistence API (Java持久层API)</h1><h2 id="什么是JPA"><a href="#什么是JPA" class="headerlink" title="什么是JPA?"></a>什么是JPA?</h2><p>​        <code>JPA</code>的全称为<code>Java Persistence API</code>，即Java持久层规范。这是Sun公司希望整合ORM技术而推出的官方规范，官方只定义了一些注解和接口，实现由具体厂商完成。目前，实现了JPA规范的开源框架有<code>Hibernate</code>, <code>TopLink</code>, <code>OpenJPA</code>等。</p>
+<p>​        JPA是面向对象的而非面向数据实体的，使开发人员从SQL中解放出来。支持面向对象的高级特性，如继承，多态，组合，聚合等操作。话句话说，JPA只有在面向对象分析与设计的系统中才能发挥最大的功效，如果应用系统业务需求简单，并需要考虑极高的查询性能，JPA或许就不太适合，因为JPA不是面向SQL的，无法做SQL优化。</p>
+<h2 id="JPA的使用场景"><a href="#JPA的使用场景" class="headerlink" title="JPA的使用场景"></a>JPA的使用场景</h2><p>​        能发挥JPA最大能力的场景就是在存储领域模型中，但这需要开发团队有面向对象分析与设计的基础，还需要有领域专家的业务知识的支持，普通开发团队可能不具备这些能力。</p>
+<p>​        另一个场景就是单表查询比较多的情况，JPA提供的查询语句（JPQL）和条件API能够非常方便的对单表进行查询。</p>
+<p>​        但JPA是以实体为单位，每次查询总是会将整个实体对象加载进内存，如果系统对于查询效率有较高的性能要求，可能JPA并不合适。</p>
+<p>​        比较可惜的是国内环境JPA并不火热，大部分面试者在听到公司使用JPA时总会发出疑惑的声音。大部分Java开发人员在工作中使用的都是MyBatis，因为MyBatis上手简单，而且网上有很多资源，但是在外国JPA、Hibernate等ORM框架则更受欢迎。或许是因为国内的开发团队更注重项目能够尽早上线，而将功能尽可能简单的堆进Service或者SQL中，从而加速占有市场。这在早期的创业公司确实比较适用，但对于领域知识比较复杂的业务上，尽早引入迭代开发和领域模型则会受益无穷。</p>
+<p>​        也有很多团队会选择业务稳定后再重新引入领域层，降低风险。但无论如何，只要有领域对象，JPA就有用武之地。</p>
+<h2 id="JPA的使用"><a href="#JPA的使用" class="headerlink" title="JPA的使用"></a>JPA的使用</h2><p>​        Spring团队也提供了Spring Data Jpa 的规范，默认实现为Hibernate。下面介绍一些JPA中常用的注解。</p>
+<p>​        另外，JPA会自动帮我们建表，JPA有自己默认的命名规范，不熟悉JPA的同学建议先用JPA自动建表，等熟悉了规则后再自己创建表。</p>
+<p>​        JPA中有很多注解，这些注解大致可以分为两类：针对实体的与针对表的。针对实体的注解主要用来处理实体之间的关系，针对表的注解用来处理实体与表之间的映射关系。</p>
+<h3 id="Access"><a href="#Access" class="headerlink" title="@Access"></a>@Access</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>AccessType</td>
+<td>用于指定实体类、超类、嵌入类属性的访问类型。<br />AccessType.FIELD表示根据属性访问。<br />AccessType.PROPERTY表示根据GetterSetter访问。</td>
+</tr>
+</tbody></table>
+<p>​        我们在定一个实体的时候，可能会在一些属性上标注@Column、@Version等注解，也可能在Getter方法上标注。但是JPA的规范中默认不不支持将这两种方法混合使用。也就是说如果在属性上使用了@Id注解，那么同一个实体中的Getter方法上使用的@Column将会无效。</p>
+<p>​        JPA会自动读取我们实体类、超类、嵌入类的信息，如果属性上有JPA注解则自动Access的值为FIELD，官方推荐使用PROPERTY。通常来说不需要手动指定@Access注解。目前已知有两个使用场景：</p>
+<ul>
+<li>混合访问。一般来说需要统一一个类的访问类型，By Field Or By Property。但难免存在一些情况必须混合使用，这时就可以通过@Access实现混合使用。通过在类上定义@Access标明访问方式，在需要混合访问的属性上使用@Transient，并在另一个访问方式的属性或方法上使用@Access.</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Access(AccessType.FIELD)</span> <span class="comment">// 标明根据字段访问</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">    <span class="meta">@Transient</span>  <span class="comment">// 希望通过Getter方法访问，使用@Transient标记为临时</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Access(AccessType.PROPERTY)</span> <span class="comment">// 指定访问方式</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;u_name&quot;)</span>     <span class="comment">// 实现混合注解使用</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>配合@ElementCollection使用@Embeddable。如果在@ElementCollection的嵌入值中又嵌套了嵌入值，这时访问方法默认会使用@Access(AccessType.PROPERTY)，如果希望根据字段访问，则在类上定义@Access(AccessType.FIELD)即可。</li>
+</ul>
+<hr>
+<h3 id="Basic"><a href="#Basic" class="headerlink" title="@Basic"></a>@Basic</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fetch</td>
+<td>FetchType</td>
+<td>FetchType.LAZY 延迟加载<br />FetchType.EAGER  即使加载</td>
+</tr>
+<tr>
+<td>optional</td>
+<td>boolean</td>
+<td>是否可以为Null</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>JPA中有许多注解可以设置懒加载<code>FetchType.LAZY</code> ，@Basic,@OneToMany, @ElementCollection等。但是需要注意的是，懒加载必须在一个Session中才能完成，这个session指的是hibernate与数据库的一次session，也就是一个事务中。在很多情况下我们的查询功能是不开启事务的，这就会导致懒加载时session关闭的异常：<code>org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role</code>，因为一个如果Service层不开启事务，默认情况下一个SQL是运行在自己的事务中的。</p>
+<p>所以如果想要使用懒加载，就必须要在Service开启事务，使查询共用一个session，查询接口也是一样的</p>
+</blockquote>
+<p>实体类中，属性如果没有标注 <code>@Basic</code> 注解，则将使用 <code>@Basic</code> 注解的默认值。可以使用在如下属性上：</p>
+<ul>
+<li>Java 原始类型</li>
+<li>原始类型的包装类型</li>
+<li>String</li>
+<li>java.math.BigInteger</li>
+<li>java.math.BigDecimal</li>
+<li>java.util.Date</li>
+<li>java.util.Calendar</li>
+<li>java.sql.Date</li>
+<li>java.sql.Time</li>
+<li>java.sql.Timestamp</li>
+<li>byte[]</li>
+<li>Byte[]</li>
+<li>char[]</li>
+<li>Character[]</li>
+<li>枚举</li>
+<li>任意实现 java.io.Serializable 接口的类型</li>
+<li>LocalDate、LocalDateTime</li>
+</ul>
+<h3 id="Column"><a href="#Column" class="headerlink" title="@Column"></a>@Column</h3><p>用于定义字段与表中列的映射关系，这个注解比较常见这里暂时不写。</p>
+<h3 id="Embeddable、-Embedded、-EmbeddedId"><a href="#Embeddable、-Embedded、-EmbeddedId" class="headerlink" title="@Embeddable、@Embedded、@EmbeddedId"></a>@Embeddable、@Embedded、@EmbeddedId</h3><p>这三个注解都没有属性，都用来修饰嵌入值。</p>
+<ul>
+<li>@Embeddable修饰类，表示该类可以被嵌入。</li>
+<li>@Embedded修饰属性或getter方法，表示该属性为嵌入值。</li>
+<li>@EmbeddedId修饰唯一标识属性或getter方法，表示该唯一标识为嵌入值，需要实现Serializable注解，可以用在联合主键的场景。</li>
+</ul>
+<blockquote>
+<p>注意：</p>
+<ul>
+<li>嵌入值是一个整体，查询时必须按整个嵌入值对象查询，而不能只根据嵌入值中的部分数值查询。除非直接写SQL。</li>
+<li>嵌入值对象中的@PrePersist，@PreUpdate等实体生命周期方法不会被调用</li>
+<li>嵌入值尽量实现Getter和Setter，Hibernate有些情况下会根据GetterSetter访问，私有的GetterSetter也可以。</li>
+</ul>
+</blockquote>
+<p>举个例子。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span></span>&#123;</span><br><span class="line">    <span class="meta">@EmbeddedId</span></span><br><span class="line">    <span class="keyword">private</span> StudentId studentId;</span><br><span class="line">    <span class="meta">@Embedded</span></span><br><span class="line">    <span class="keyword">private</span> Name name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Embeddable</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StudentId</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String year;</span><br><span class="line">    <span class="keyword">private</span> String uuid;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Embeddable</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Name</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String firstName;</span><br><span class="line">    <span class="keyword">private</span> String lastName;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="ElementCollection"><a href="#ElementCollection" class="headerlink" title="@ElementCollection"></a>@ElementCollection</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>targetClass</td>
+<td>Class</td>
+<td>指定ElementCollection标记的元素类型，如果有泛型，则标记泛型</td>
+</tr>
+<tr>
+<td>fetch</td>
+<td>FetchType</td>
+<td>延迟加载或即使加载</td>
+</tr>
+</tbody></table>
+<p>​        @ElementCollection用来定义实体中存在的集合对象，与@OneToMany的作用类似。不同的地方在于@ElementCollection标注的既可以是值对象（无唯一标识），修饰的类需要使用@Embeddable修饰，也可以是实体对象（存在唯一标识）。而@OneToMany标注的只能是实体（存在唯一标识），需要使用@Entity标记。</p>
+<p>​        对于值对象集合，@ElementCollection是通过多的一方外键关联主表，在修改集合中的元素时，会将所有的元素删除，然后再重新插入新的集合元素。</p>
+<p>​        对于实体集合，将会与@OneToMany一样，通过第三张关系表建立关联，在修改集合中的元素时，会将关系表中所有的关系先删除，再重新插入关联，多的一方不会被删除。</p>
+<p>​        在邻域驱动设计中，@ElementCollection相当于维持一个聚合内的对象间关系，而@OneToMany则是跨聚合的关联。而一般引用聚合是持有该聚合的Id，所以不建议使用@OneToMany。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Result</span></span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    Long id;</span><br><span class="line">    String stepName;</span><br><span class="line">    <span class="meta">@ElementCollection(targetClass = Value.class)</span></span><br><span class="line">    List&lt;Value&gt; values;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Embeddable</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Value</span> </span>&#123;</span><br><span class="line">    Integer value;</span><br><span class="line">    String unit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​        以上情况，JPA会创建两张表，result 和 result_value, result_value通过”result_id”外键关联result。</p>
+<h4 id="ElementCollection-Query"><a href="#ElementCollection-Query" class="headerlink" title="ElementCollection Query"></a>ElementCollection Query</h4><p>嵌入值不是一个Entity，所以不能够直接通过Repository查询，但有时会需要对ElementCollection进行条件判断查询或者分页查询，那就可以通过使用@Query注解来定制<code>JPQL</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 有一个实体Book,持有一个值对象集合Set&lt;Keyword&gt;,希望能根据Keyword来查找Book或者分页查询Keyword(假设Keyword有很多)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Book</span></span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    String sbn;</span><br><span class="line">    <span class="meta">@ElementCollection</span></span><br><span class="line">    Set&lt;Keyword&gt; keywords;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Embeddable</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Keyword</span></span>&#123;</span><br><span class="line">    String keyword;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Keyword</span><span class="params">(String keyword)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.keyword = keyword;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">BookRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">Book</span>,<span class="title">String</span>&gt;</span>&#123;</span><br><span class="line">    <span class="comment">// 通过 inner join 集合即可完成关联</span></span><br><span class="line">    <span class="comment">// 该JPQL会根据sbn条件查询，并按照keyword排序，并分页</span></span><br><span class="line">    <span class="comment">// 如果想要查询拥有某个关键字的，加在条件上即可</span></span><br><span class="line">    <span class="meta">@Query(value = &quot;select new Keyword(bk.keyword) from Book b &quot; +</span></span><br><span class="line"><span class="meta">           &quot;inner join b.keywords bk where b.sbn = ?1 order by bk.keyword asc&quot;)</span></span><br><span class="line">    <span class="function">Set&lt;Keyword&gt; <span class="title">findKeywordBySbnPage</span><span class="params">(String sbn, Pageable pageable)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="OrderBy"><a href="#OrderBy" class="headerlink" title="@OrderBy"></a>@OrderBy</h3><p>在实体中存在集合时，可能希望集合按照一些字段进行排序，可以使用@OrderBy注解来实现。具体使用如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Book</span></span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    String sbn;</span><br><span class="line">    <span class="meta">@ElementCollection</span></span><br><span class="line">    <span class="meta">@OrderBy(&quot;keyword asc&quot;)</span>  <span class="comment">// 查询的集合会按照keyword升序排序</span></span><br><span class="line">    Set&lt;Keyword&gt; keywords;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Embeddable</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Keyword</span></span>&#123;</span><br><span class="line">    String keyword;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Keyword</span><span class="params">(String keyword)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.keyword = keyword;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="MapKey、-MapKeyClass、-MapKeyColumn、-MapKeyEnumerated等"><a href="#MapKey、-MapKeyClass、-MapKeyColumn、-MapKeyEnumerated等" class="headerlink" title="@MapKey、@MapKeyClass、@MapKeyColumn、@MapKeyEnumerated等"></a>@MapKey、@MapKeyClass、@MapKeyColumn、@MapKeyEnumerated等</h3><p>有时候我们会希望实体中存储着Map结构的集合，此时就能使用这类主键定义映射关系。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PlanCheck</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> String checkId;</span><br><span class="line">    <span class="meta">@ElementCollection</span></span><br><span class="line">    <span class="meta">@MapKeyColumn(name = &quot;layerCode&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, SelectableLayer&gt; selectableLayers;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Embeddable</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SelectableLayer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String layerName;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isSelected;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​        这种情况下，JPA会创建两张表，plan_check 和 plan_check_selecttable_layer两张表。plan_check_selecttable_layer会有四个字段，分别是checkId，layerName，isSelected，layerCode，其中checkId和layerCode是一对联合主键.</p>
+<h3 id="Entity"><a href="#Entity" class="headerlink" title="@Entity"></a>@Entity</h3><p>修饰实体，实体必须要定义唯一标识，可以使用@Id或EmbeddedId定义。</p>
+<h3 id="Enumerated"><a href="#Enumerated" class="headerlink" title="@Enumerated"></a>@Enumerated</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>EnumType</td>
+<td>- EnumType.ORDINAL根据枚举序数存储<br />- EnumType.STRING根据枚举名称存储</td>
+</tr>
+</tbody></table>
+<p>修饰枚举字段的存储方式。</p>
+<h3 id="Id"><a href="#Id" class="headerlink" title="@Id"></a>@Id</h3><p>在@Entity中可以使用该注解标记唯一标识，在数据库中即主键的概念。这种方式标记的主键是单值主键，若想要实现复合主键，则可以使用@EmbeddedId。</p>
+<h3 id="Lob"><a href="#Lob" class="headerlink" title="@Lob"></a>@Lob</h3><p>定义在属性或方法中，表示该字段为Lob属性，JPA会根据字段类型自行决定是Blob还是Clob。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">	<span class="meta">@Lob</span> </span><br><span class="line">	<span class="meta">@Basic(fetch=LAZY)</span></span><br><span class="line">    <span class="meta">@Column(name=&quot;REPORT&quot;)</span></span><br><span class="line">    <span class="keyword">protected</span> String report;</span><br><span class="line">---</span><br><span class="line">    <span class="meta">@Lob</span> </span><br><span class="line">	<span class="meta">@Basic(fetch=LAZY)</span></span><br><span class="line">    <span class="meta">@Column(name=&quot;EMP_PIC&quot;)</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">byte</span>[] pic;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Table"><a href="#Table" class="headerlink" title="@Table"></a>@Table</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>name</td>
+<td>String</td>
+<td>映射的表名可以用这个注解更改</td>
+</tr>
+<tr>
+<td>catalog</td>
+<td>String</td>
+<td>表的目录，一些数据库没有该属性</td>
+</tr>
+<tr>
+<td>schema</td>
+<td>String</td>
+<td>数据库的模式，如PGSQL，ORACLE中的概念</td>
+</tr>
+<tr>
+<td>uniqueConstraints</td>
+<td>UniqueConstraint[]</td>
+<td>唯一约束数组</td>
+</tr>
+<tr>
+<td>indexes</td>
+<td>Index[]</td>
+<td>索引数组</td>
+</tr>
+</tbody></table>
+<p>该注解用来修饰实体映射的表的属性。</p>
+<h3 id="Temporal"><a href="#Temporal" class="headerlink" title="@Temporal"></a>@Temporal</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>TemporalType</td>
+<td>映射java.util.Date和java.util.Calendar类，有三种选项：DATE、TIME、TIMESTAMP</td>
+</tr>
+</tbody></table>
+<h3 id="Transient"><a href="#Transient" class="headerlink" title="@Transient"></a>@Transient</h3><p>该注解用来定义一些实体中不需要持久化的属性，比如一些在内存中计算出来的结果等。</p>
+<h3 id="Version"><a href="#Version" class="headerlink" title="@Version"></a>@Version</h3><p>指定用作其乐观锁值的实体类的版本字段或属性。 该注解用于在执行合并操作和乐观并发控制时确保完整性。</p>
+<p>支持：</p>
+<ul>
+<li>int</li>
+<li>short</li>
+<li>long</li>
+<li>Integer</li>
+<li>Short</li>
+<li>Long</li>
+<li>java.sql.Timestamp</li>
+</ul>
+<h3 id="OneToOne、-OneToMany、-ManyToOne"><a href="#OneToOne、-OneToMany、-ManyToOne" class="headerlink" title="@OneToOne、@OneToMany、@ManyToOne"></a>@OneToOne、@OneToMany、@ManyToOne</h3><p>这三个注解用来定义实体与实体之间的关系。只推荐在一个聚合内，实体之间通过引用关联，聚合外通过持有聚合根Id关联，控制实体间的复杂性。@ManyToMany多对多的映射关系太过复杂，尽量避免设计这种关联关系，这里不讨论ManyToMany。</p>
+<p>默认情况下，使用这类注解会通过创建第三张表来建立连接关系。若是希望通过外键实现关联，则可以使用@JoinColumn来指定连接的字段。</p>
+<blockquote>
+<p>注意：@OneToMany最好使用Set集合。如果使用List，在一些情况下JPA可能查出重复的记录，比如在@Entity中使用@OneToMany时，多的一方中又使用@ElementCollection或@OneToMany，就会导致@Entity中@OneToMany集合的数据重复。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Group</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> id;</span><br><span class="line">    <span class="meta">@OneToMany</span>             <span class="comment">// 这种情况下，Member将会因为关联查询Job而导致重复，重复个数与Job的数量相同，将List改为Set即可解决这些问题。</span></span><br><span class="line">    List&lt;Member&gt; members;  <span class="comment">// 注意重写Member的equals与hashcode方法</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Member</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> id;</span><br><span class="line">    <span class="meta">@ElementCollection</span>            </span><br><span class="line">    List&lt;Job&gt; jobs;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</blockquote>
+<h4 id="OneToMany"><a href="#OneToMany" class="headerlink" title="@OneToMany"></a>@OneToMany</h4><p>这里重点介绍一下@OneToMany，它有以下属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当注释的属性是集合时，需要指定泛型的实体类字节码</span></span><br><span class="line"><span class="function">Class <span class="title">targetEntity</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">void</span>.class</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表示级联类型，CascadeType是eunm类型，常用的有如下几种：</span></span><br><span class="line"><span class="comment">// PERSIST: 表示持久保存实体类时，也保存其关联的对象数据。</span></span><br><span class="line"><span class="comment">// REMOVE: 级联删除</span></span><br><span class="line"><span class="comment">// REFRESH: 级联更新，实体类更新，级联实体类也同时更新</span></span><br><span class="line"><span class="comment">// ALL: 全部类型都持有</span></span><br><span class="line">CascadeType[] cascade() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表示懒加载级联属性，和立即加载，如果多的一方数据量较大，则可以考虑配置LAZY，懒加载必须要在一个事务中查询</span></span><br><span class="line"><span class="function">FetchTpye <span class="title">fetch</span><span class="params">()</span> <span class="keyword">default</span> EAGER</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 默认情况下，@OneToMany会建立第三张关系来确定实体之间的联系，可以通过@JoinColumn来指定外键作为关联，或者配置该字段属性</span></span><br><span class="line"><span class="comment">// 该字段配置的值为 多方的外键或者实体</span></span><br><span class="line"><span class="comment">// 配置了该值后会放弃维护多方，即删除List中的元素，并不会在将该操作持久化到数据库</span></span><br><span class="line"><span class="comment">// 如果希望同步删除，则可以配置orphanRemoval=true</span></span><br><span class="line"><span class="function">String <span class="title">mappedBy</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 维护集合的删除，同时会保证级联删除</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">orphanRemoval</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">false</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="JoinColumn"><a href="#JoinColumn" class="headerlink" title="@JoinColumn"></a>@JoinColumn</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 表示外键的名字</span></span><br><span class="line"><span class="function">String <span class="title">name</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表示主键的名称，可不填</span></span><br><span class="line"><span class="function">String <span class="title">referencedColumnName</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表示外键是否能为null</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">nullable</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">true</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表示是否跟随主实体类一起保存，在Many的一方时，必须为false</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">insertable</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">true</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表示是否跟随主实体类一起更新，在Many的一方时，必须为false</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">updatable</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">true</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表示外键的属性，值也是一个注解，常用方法：</span></span><br><span class="line"><span class="comment">// foreignKey = @ForeignKey(name = &quot;none&quot;,value = ConstrainMode.NO_CONSTRAINT)</span></span><br><span class="line"><span class="function">ForeignKey <span class="title">foreignKey</span><span class="params">()</span> <span class="keyword">default</span> @<span class="title">ForeignKey</span><span class="params">(PROVIDER_DEFAULT)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>注意：使用JPA多表级联的时候，不要用Lombok的@Data或者@ToString 注解，这会引起<code>StackOverflow</code>异常。也不要使用@Column注解注释主键。</p>
+<h3 id="MappedSuperclass"><a href="#MappedSuperclass" class="headerlink" title="@MappedSuperclass"></a>@MappedSuperclass</h3><p>该注解定义在类上，用于在基类中定义一些表的共有属性，如create_time、update_time之类的。</p>
+<h3 id="PrePersist、-PreUpdate、-PreRemove等"><a href="#PrePersist、-PreUpdate、-PreRemove等" class="headerlink" title="@PrePersist、@PreUpdate、@PreRemove等"></a>@PrePersist、@PreUpdate、@PreRemove等</h3><p>该注解定义在方法上，基于实体生命周期的回调函数，网上资源很多这里不做详细介绍。</p>
+<blockquote>
+<p>注意只在实体中有效，在嵌入值中是没有效果的。</p>
+</blockquote>
+
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : ChenJX <br/>
+        
+        原文链接 : <a href="">https://michael1024-cjx.github.io/blog/2021/07/27/2021-07-27-JPA%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95%E4%B8%8E%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share"
+  style="margin-top: -2rem"
+  data-wechat-qrcode-title="<p>微信扫一扫</p>"
+  data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>"
+   data-sites="qq, weibo, wechat" 
+  
+>
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async>
+  
+
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/blog/2021/07/08/2021-07-08-Spring%E5%AE%B9%E5%99%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" target="_self">Spring容器初始化之ApplicationContextAware</a>
+      </div>
+    
+    
+  </nav>
+
+  
+    <a href="#comment" class="comment-anchor"></a>
+<div class="comment-title"><i class="iconfont icon-footprint"></i> 留下足迹 <i class="iconfont icon-footprint"></i></div>
+<div id="vcomments"></div>
+
+<script defer>
+  if( true ) {
+    let path = getRealPath()
+    new Valine({
+      el: "#vcomments",
+      appId: "Hyq9wkH495DgNHWhDQCOfQSp-gzGzoHsz",
+      appKey: "WaR7nrzhliHj9aVwdQzkdlGd",
+      notify: false,
+      verify: false,
+      avatar: "robohash",
+      placeholder: "正确填写邮箱, 才能及时收到回复哦♪(^∇^*)",
+      path
+    });
+  }
+</script>
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Hyq9wkH495DgNHWhDQCOfQSp-gzGzoHsz", "WaR7nrzhliHj9aVwdQzkdlGd");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a target="_blank" rel="noopener" href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Made With 💗 | Powered by <a target="_blank" rel="noopener" href="https://godbmw.com/">GodBMW</a>
+    <br>
+    
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2021, 6, 1).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+  </body>
+
+</html>
