@@ -253,27 +253,27 @@
 <p>​        它的包头根据请求和响应为不同的格式，包括请求方法，资源路径，协议版本，请求头，用户数据等。</p>
 <h3 id="TCP-IP协议"><a href="#TCP-IP协议" class="headerlink" title="TCP/IP协议"></a>TCP/IP协议</h3><p>​        应用层协议根据不同的应用之间通信制定不同的协议规则，而传输层协议制定两台主机之间的通信。TCP就是传输层协议，它是面向连接的，可靠的协议，与它在同层的协议有UDP协议，这是无连接，不可靠的。</p>
 <p>​        TCP协议的包体就是整个的应用层协议的数据，而包头的格式如下。</p>
-<img src="D:\Typora\计算机网络\image\TCP包头.png" alt="image-20210830223545411" style="zoom:67%;" />
+<img src="https://s3.bmp.ovh/imgs/2021/09/f097a0e347091bdf.png" alt="image-20210830223545411" style="zoom:67%;" />
 
 <blockquote>
 <p>TCP头部占用20字节，一个字节8比特。所以端口号可以用16比特来记录，转为10进制的大小范围为0~2^16-1（0-65535）。</p>
 </blockquote>
 <p>​        可以看的，TCP头中只有端口号，没有IP,那么如何知道是谁发给谁的呢？答案就在IP协议中，IP协议的头部如下：</p>
-<img src="D:\Typora\计算机网络\image\IP协议头部信息.png" alt="image-20210830224125713" style="zoom:67%;" />
+<img src="https://s3.bmp.ovh/imgs/2021/09/6349a6baa9d458bf.png" alt="image-20210830224125713" style="zoom:67%;" />
 
 <blockquote>
 <p>这是IPv4版本的头部，还有IPv6的版本。</p>
 </blockquote>
 <p>​        IPv4协议通过32位记录IP。提到IP协议又必须知道MAC协议。两个计算机之间会隔着多个的路由器或集线器，虽然通过IP协议能够知道起点和终点，但起点和终点之间有无数条路线，该如何知道数据包的下一步该往哪走？MAC协议就是为了解决这个问题的，告诉数据包下一步往哪走，MAC头部会在到达一个路由器或集线器后自动替换为下一个路由器的MAC地址，最终一步一步的将数据发送给目标IP的主机。</p>
-<img src="D:\Typora\计算机网络\image\MAC头部.png" alt="image-20210830224345145" style="zoom:67%;" />
+<img src="https://s3.bmp.ovh/imgs/2021/09/ecff1b52a32eed36.png" alt="image-20210830224345145" style="zoom:67%;" />
 
 <p>​    至此，一个TCP的数据包应该是如下的样子：</p>
-<img src="D:\Typora\计算机网络\image\TCP数据包.png" alt="image-20210830225022162" style="zoom:67%;" />
+<img src="https://s3.bmp.ovh/imgs/2021/09/65809d4ff7cbe413.png" alt="image-20210830225022162" style="zoom:67%;" />
 
 <h4 id="端口号"><a href="#端口号" class="headerlink" title="端口号"></a>端口号</h4><p>​        端口号是TCP与UDP协议中的定义，用于同一主机中不同的应用程序使用TCP或UDP协议，TCP与UDP的端口号范围大小虽然一样，但却是区分开的。</p>
 <h3 id="IP"><a href="#IP" class="headerlink" title="IP"></a>IP</h3><p>​        IP是计算机的地址，也可以理解为门牌号一样的东西。但实际上IP并不是计算机的东西，而是属于计算机中的网卡的，一台计算机可能有多个网卡，也就会有多个IP。为方便理解和解释，可暂时将IP认作是计算机的。</p>
 <h4 id="子网掩码"><a href="#子网掩码" class="headerlink" title="子网掩码"></a>子网掩码</h4><p>一个IP实际上表示了两个信息，网段和网段中的一台主机。但IP协议并没规定IP中的几位表示网段的信息，几位表示主机，而是通过一个叫做子网掩码的东西来做区分。将IP与子网掩码转为二进制，子网掩码为1的对应的IP位是网段信息，为0的表示网段内的主机地址。（c）中的24是子网掩码的缩写，就是将子网掩码转为二进制然后求和得到的。</p>
-<img src="D:\Typora\计算机网络\image\IP和子网掩码.png" alt="image-20210830225940302" style="zoom:67%;" />
+<img src="https://s3.bmp.ovh/imgs/2021/09/73f0a1d5fbd0b9d0.png" style="zoom:67%;" />
 
 <h3 id="域名"><a href="#域名" class="headerlink" title="域名"></a>域名</h3><p>​        网络是用来传输信息的。两个人面对面时，可以不用打招呼就聊天，交换信息，但是当周围的人越来越多，我们希望与某个人通信，就需要知道他的名字，然后叫住他，再与他通信。</p>
 <p>​        同样，网络的世界也是一样的。如果你想要与某个计算机通信，那你就需要知道它的<strong>IP</strong>。但是<strong>IP</strong>是不容易记忆的，所以用一个名字来方便记忆。域名与IP的关系就像名字与身份证一样，是为了方便记忆而出现的。</p>
@@ -290,7 +290,7 @@
 <p>注：Socket库是一个功能库，而socket是Socket库中的一个组件。区分首字母大小写，大写的表示库，小写的表示组件</p>
 </blockquote>
 <p>​        收发数据有四个阶段，这四个阶段就用到了Socket库。在收发数据之前，就需要向DNS查询IP，通过<code>gethostbyname</code>组件。</p>
-<img src="D:\Typora\计算机网络\image\收发数据的四个阶段.png" alt="image-20210819000419385" style="zoom:67%;" />
+<img src="https://s3.bmp.ovh/imgs/2021/09/a684c6e15c553f8d.png" alt="image-20210819000419385" style="zoom:67%;" />
 
 <h4 id="第一步：准备-socket"><a href="#第一步：准备-socket" class="headerlink" title="第一步：准备 socket"></a>第一步：准备 socket</h4><p>​        提到计算机网络，有接触的同学都一定会知道<code>socket</code>, 中文翻译叫<strong>套接字</strong>。相信大部分人在学习计算机网络的时候看到这几个字都是懵的，这几个字都认识，但是组合起来到底是啥意思？确实这个<strong>套接字</strong>的翻译让摸不着头脑，我们暂时不去了解命名的含义（程序员都知道命名的难！），先让我们看看什么是socket。</p>
 <p>​        socket实际上就是存储一堆数据的东西，这一堆数据中有通信双方的IP和端口号，通信状态，协议等。协议栈就是根据socket中的数据来工作的。windows系统下，在命令行中输入<code>netstat -ano</code>时会输出很多行数据，我们可以将每一行数据理解成一个socket，这些数据就是socket，socket就代表这些数据。</p>
@@ -298,7 +298,8 @@
 <h4 id="第三步：发送、接收-write-read"><a href="#第三步：发送、接收-write-read" class="headerlink" title="第三步：发送、接收 write read"></a>第三步：发送、接收 write read</h4><p>​        成功建立连接后，就可以开始向对方发送数据了，这时使用的组件就是write。对方接收数据后会返回响应，这时需要使用read组件来读取对方的响应数据。</p>
 <h4 id="第四步：断开-close"><a href="#第四步：断开-close" class="headerlink" title="第四步：断开 close"></a>第四步：断开 close</h4><p>​        当双方通信完毕后，双方皆可调用close来断开连接，这时socket就会被销毁。</p>
 <h3 id="窗口"><a href="#窗口" class="headerlink" title="窗口"></a>窗口</h3><p>​        原来的TCP协议定义的网络交互格式是一问一答的方式，如(a)所示，但是这样的情况下，就会浪费等待响应的时间。于是设计出了滑动窗口来减少等待ACK响应的时间。</p>
-<p><img src="D:\Typora\计算机网络\image\滑动窗口.png" alt="image-20210901220318628"></p>
+<img src="https://s3.bmp.ovh/imgs/2021/09/3002e8f4a9895d7c.png" style="zoom:67%;" />
+
 <h3 id="缓冲区"><a href="#缓冲区" class="headerlink" title="缓冲区"></a>缓冲区</h3><p>​        每一个socket都会有一个read缓冲区<code>SO_RCVBUF</code>与write缓冲区<code>SO_SNDBUF</code>。</p>
 <p>​        在应用程序执行write写数据时，操作系统并不会立即将数据发送给目标，因为如果用户每次只写一个字节就发送，就会造成资源浪费。操作系统会将用户write的数据写入SO_SNDBUF中，当缓冲区满了就发送，但是也存在缓冲区不满或者要很长时间才能满的情况，操作系统也会在一定时间间隔内将缓冲区中的数据发送出去。</p>
 <p>​        在操作系统接收到数据时，就会将数据放入<code>SO_RCVBUF</code>中，等待应用程序的读取，如果有个数据都到了，就都会在<code>SO_RCVBUF</code>中，造成<code>粘包</code>的现象，因为TCP协议不区分哪些数据属于同一个包，这就需要应用层协议去定义解析规则了。</p>
