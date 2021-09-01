@@ -4,7 +4,7 @@
       max-width: 300px !important;
     }
   }
-  
+
   .pc-view {
     display: block;
   }
@@ -18,7 +18,7 @@
   .mobile-view {
     display: none;
   }
-  
+
   @media (max-width: 768px) {
     .pc-view {
       display: none !important;

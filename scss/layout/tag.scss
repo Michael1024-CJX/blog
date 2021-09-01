@@ -42,6 +42,7 @@
     &::before {
       content: "[";
     }
+
     &::after {
       content: "]";
     }
@@ -50,6 +51,7 @@
 
 .container.tag-index {
   line-height: 3;
+
   h3 {
     text-align: center;
     font-size: 1.8rem;

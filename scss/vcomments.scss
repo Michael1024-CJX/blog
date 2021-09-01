@@ -43,6 +43,7 @@ $rem: 16px;
 .v .power {
   padding: 0.5 * $rem 0 !important;
 }
+
 .v .power,
 .v .power a {
   font-size: 0.75 * $rem !important;
@@ -51,6 +52,7 @@ $rem: 16px;
 .v .vinfo .col {
   font-size: 0.875 * $rem !important;
 }
+
 .v .vinfo .vcount .vnum {
   font-size: 1.25 * $rem !important;
 }
@@ -96,6 +98,7 @@ $rem: 16px;
     height: 2.5 * $rem !important;
   }
 }
+
 .v .vlist .vcard .vhead .vnick {
   font-size: 0.875 * $rem !important;
   margin-right: 0.875 * $rem !important;
@@ -112,6 +115,7 @@ $rem: 16px;
 .v .vlist .vcard .vh {
   padding-bottom: 0.5 * $rem !important;
 }
+
 .v .vlist .vcard .vh .vtime {
   font-size: 0.75 * $rem !important;
   margin-right: 0.875 * $rem !important;
@@ -140,14 +144,17 @@ $rem: 16px;
   height: 3.15 * $rem !important;
   line-height: 3.15 * $rem !important;
 }
+
 .v .vlist .vcard .vquote {
   margin-top: 1 * $rem !important;
   padding-left: 1 * $rem !important;
 }
+
 .v .vlist .vcard .vquote .vimg {
   width: 2.225 * $rem !important;
   height: 2.225 * $rem !important;
 }
+
 .v .vpage .vmore {
   margin: 1 * $rem 0 !important;
 }

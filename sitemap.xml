@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://michael1024-cjx.github.io/blog/2021/09/01/2021-09-01-%E7%BD%91%E7%BB%9C%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%9E%E6%8E%A5%E7%9A%84/</loc>
+    
+    <lastmod>2021-09-01</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://michael1024-cjx.github.io/blog/2021/07/27/2021-07-27-JPA%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95%E4%B8%8E%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%EF%BC%89/</loc>
     
     <lastmod>2021-08-13</lastmod>
@@ -18,7 +25,7 @@
 
   <url>
     <loc>https://michael1024-cjx.github.io/blog</loc>
-    <lastmod>2021-08-20</lastmod>
+    <lastmod>2021-09-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -28,14 +35,21 @@
   
   <url>
     <loc>https://michael1024-cjx.github.io/blog/categories/Spring/</loc>
-    <lastmod>2021-08-20</lastmod>
+    <lastmod>2021-09-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://michael1024-cjx.github.io/blog/categories/JPA/</loc>
-    <lastmod>2021-08-20</lastmod>
+    <lastmod>2021-09-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://michael1024-cjx.github.io/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-TCP-IP/</loc>
+    <lastmod>2021-09-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>

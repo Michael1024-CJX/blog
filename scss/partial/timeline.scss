@@ -10,6 +10,7 @@
   margin-left: 50px;
   margin-top: 5px;
   font-size: 1.4rem;
+
   .archive-move-on {
     position: absolute;
     top: 0;
@@ -93,9 +94,11 @@
 
     &:hover {
       border-bottom-color: #fc6868;
+
       &::before {
         background: #fc6868;
       }
+
       h2 {
         a {
           color: #222;

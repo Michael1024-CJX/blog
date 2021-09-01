@@ -2,7 +2,6 @@
 @import "partial/navigation.scss";
 @import "partial/timeline.scss";
 @import "partial/reward.scss";
-
 @import "layout/index.scss";
 @import "layout/home.scss";
 @import "layout/post.scss";
@@ -10,12 +9,10 @@
 @import "layout/category.scss";
 @import "layout/friend.scss";
 @import "layout/about.scss";
-
-
 @import "animation.scss";
 @import "mathjax.scss";
 @import "vcomments.scss";
-@import "article.scss"; 
+@import "article.scss";
 
 $body-bg-color: white;
 
@@ -33,8 +30,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Segoe UI", "Lucida Grande", Helvetica, "Microsoft YaHei",
-    FreeSans, Arimo, "Droid Sans", "wenquanyi micro hei", "Hiragino Sans GB",
-    "Hiragino Sans GB W3", Arial, sans-serif;
+  FreeSans, Arimo, "Droid Sans", "wenquanyi micro hei", "Hiragino Sans GB",
+  "Hiragino Sans GB W3", Arial, sans-serif;
   background-color: $body-bg-color;
   overflow-x: hidden;
 }
