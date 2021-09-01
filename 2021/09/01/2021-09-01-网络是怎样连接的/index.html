@@ -247,7 +247,7 @@
 <h3 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h3><p>​        什么是协议？协议就是一种契约，在网络中，通信双方想要正确的通信，就要彼此约定一种协议，发送者按照协议约定的格式编写信息，接收者按照协议的格式读取信息。</p>
 <p>​        而计算机网络中，又将通信的过程中使用的协议进行了分层，每层协议约定不同的东西，处理不同层面的问题，每一层协议都依赖他的下一层，最终通过层层协议的协助，完成将数据的正确传递。这里主要介绍应用层协议和传输层协议，应用层协议是最上层协议，依赖它的下一层传输层协议，而传输层协议又依赖它的下一层网络层协议。应用层协议主要有<code>http</code>, <code>ftp</code>, <code>DNS</code>等，而传输层协议主要是<code>tcp</code>,<code>udp</code>。</p>
 <p>​        协议定义了数据包的格式。我们可以将每层协议理解成两部分，包头+包体。包头定义了该层协议的数据，包体表示上一层协议的数据。对于HTTP协议的数据包，包头就是HTTP头部信息，包体数据是用户数据。对于TCP协议的数据包，包头就是TCP的头部信息，包体就是整个HTTP数据包。</p>
-<img src="D:\Typora\DIST\Tangram\image\image-20210831134824212.png" alt="image-20210831134824212" style="zoom:67%;" />
+<img src="https://s3.bmp.ovh/imgs/2021/09/224710b4aa02b568.png" alt="image-20210831134824212" style="zoom:67%;" />
 
 <h3 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h3><p>​        http协议可以说是当今互联网使用最广的应用层协议，它的中文翻译叫超文本传输协议，基于<strong>TCP/IP</strong>实现，默认端口号是<strong>80</strong>。http协议的URL格式为 <code>http:</code> + <code>//</code> + <code>域名或IP</code> + <code>:</code> + <code>端口号</code> + <code>/资源路径</code> 。主要应用于浏览器与web服务器的通信。</p>
 <p>​        它的包头根据请求和响应为不同的格式，包括请求方法，资源路径，协议版本，请求头，用户数据等。</p>
