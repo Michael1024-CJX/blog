@@ -1,7 +1,3 @@
--   Date: 2022-08-08
--   Author: Michael
--   Keyword: #事务 #并发 #db 
-
 # 多版本并发控制（MVCC）
 基于MVCC的并发控制为乐观机制。读写操作均不阻塞，等到提交的时候才检验是否有冲突，由于不存在锁，大大提升了并发性能，常见的数据库Oracle，PostgreSQL，MySQL(Innodb)都使用MVCC来控制并发。
 

@@ -1,7 +1,3 @@
--   Date: 2022-08-12
--   Author: Michael
--   Keyword: #事务 #并发 
-
 # 基于锁的并发控制（LBCC）
 基于锁的并发控制是**悲观机制**，基本的锁有两种类型：`排它锁(Exclusive locks)`，`共享锁(Share locks)`。
 
