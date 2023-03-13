@@ -44,6 +44,10 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
+      - name: new site
+        run: hugo new site blog
+      - name: mv
+        run: mv `ls|grep -v "blog"` blog/content/ && mv blog/ . && rm -rf blog
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
