@@ -48,6 +48,10 @@ jobs:
         run: hugo new site blog
       - name: build site
         run: mv `ls|grep -v "blog"` blog/content/ && mv blog/** . && rm -rf blog
+      - name: install theme 
+        run: git submodule add https://github.com/theNewDynamic/gohugo-theme-ananke themes/ananke
+      - name: set theme
+        run: echo "theme = 'ananke'" >> config.toml
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
