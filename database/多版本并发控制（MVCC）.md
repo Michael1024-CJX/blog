@@ -1,8 +1,11 @@
--   Date: 2022-08-08
--   Author: Michael
--   Keyword: #事务 #并发 #db 
+---
+title: "多版本并发控制（MVCC）"
+date: 2023-03-14T02:40:15Z
+draft: false
+---
 
 # 多版本并发控制（MVCC）
+
 基于MVCC的并发控制为乐观机制。读写操作均不阻塞，等到提交的时候才检验是否有冲突，由于不存在锁，大大提升了并发性能，常见的数据库Oracle，PostgreSQL，MySQL(Innodb)都使用MVCC来控制并发。
 
 
@@ -13,7 +16,7 @@ PG为每一个事务分配一个递增的Int32整型作为**事务ID**，称为`
 PG中每条行记录都会有隐藏的4个字段（默认不显示），称为元组，分别是`xmin`, `xmax`, `cmin`, `cmax`。其中cmin和cmax分别是插入和删除该**元组**的命令，在事务中的命令序列标识，xmin和xmax与事务对其他事务的可见性相关，xmin记录创建该行数据的事务ID，xmax保存删除该行的事务ID。
 
 #### xmin影响可见性
-插入数据时，将当前xid存储到xmin中。对于[读已提交](事务#读已提交（Read%20Committed）)的隔离级别，事务中只会看到当前已提交的最大事务ID。对于[可重复读](事务#可重复读（Repeatable%20Read）)和[序列化](事务.md#序列化（Serializable）)的隔离级别，看不到事务ID大于元组中`xmin`事务的修改。
+插入数据时，将当前xid存储到xmin中。对于[读已提交](./事务#读已提交（Read%20Committed）)的隔离级别，事务中只会看到当前已提交的最大事务ID。对于[可重复读](./事务#可重复读（Repeatable%20Read）)和[序列化](./事务.md#序列化（Serializable）)的隔离级别，看不到事务ID大于元组中`xmin`事务的修改。
 
 
 #### xmax影响可见性
